@@ -34,4 +34,4 @@ jobs:
           GH_PROFILE: ${{ secrets.GH_PROFILE }}
           GH_REPO: ${{ secrets.GH_REPO }}
         run:
-          python newEntryListener.py
+          python newEntryTrigger.py
