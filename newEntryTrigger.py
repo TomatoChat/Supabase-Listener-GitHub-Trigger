@@ -14,7 +14,7 @@ supabase: Client = create_client(os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_
 lastCheckedTime = None
 
 
-def triggerGithubAction(githubKey:str=os.getenv('GITHUB_KEY'), githubActionName:str=os.getenv('GITHUB_ACTION'), githubProfileName:str=os.getenv('GITHUB_PROFILE'), githubRepoName:str=os.getenv('GITHUB_REPO')) -> int:
+def triggerGithubAction(githubKey:str=os.getenv('GH_KEY'), githubActionName:str=os.getenv('GH_ACTION'), githubProfileName:str=os.getenv('GH_PROFILE'), githubRepoName:str=os.getenv('GH_REPO')) -> int:
     logging.info(f'Triggering {githubActionName} action...')
 
     headers = {
