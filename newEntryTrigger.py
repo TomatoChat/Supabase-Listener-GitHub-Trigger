@@ -7,9 +7,29 @@ load_dotenv()
 import os
 import asyncio
 from supabase import create_client, Client
+import requests
+
 
 supabase: Client = create_client(os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_KEY'))
 lastCheckedTime = None
+
+
+def triggerGithubAction(githubKey:str=os.getenv('GITHUB_KEY'), githubActionName:str=os.getenv('GITHUB_ACTION'), githubProfileName:str=os.getenv('GITHUB_PROFILE'), githubRepoName:str=os.getenv('GITHUB_REPO')) -> int:
+    logging.info(f'Triggering {githubActionName} action...')
+
+    headers = {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': f'token {githubKey}'
+    }
+    body = {
+        'event_type': f'{githubActionName}'
+    }
+    url = f'https://api.github.com/repos/{githubProfileName}/{githubRepoName}/dispatches'
+    response = requests.post(url, headers=headers, json=body)
+
+    response.raise_for_status()
+
+    return response.status_code
 
 
 async def checkForNewEntry():
@@ -28,7 +48,11 @@ async def checkForNewEntry():
 
     if newEntry:
         logging.info(f'Found {len(newEntry)} new entries since {lastCheckedTime}')
+
         lastCheckedTime = newEntry[-1]['created_at']
+        githubActionResponse = triggerGithubAction()
+
+        logging.info(f'GitHub action trigger response: {githubActionResponse}')
     else:
         logging.info(f'No new entries found since last check...')
 
